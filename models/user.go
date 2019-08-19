@@ -1,86 +1,70 @@
 package models
 
 import (
-	"errors"
+	"fmt"
 	"strconv"
 	"time"
-)
 
-var (
-	UserList map[string]*User
+	"github.com/astaxie/beego/orm"
 )
 
 func init() {
-	UserList = make(map[string]*User)
-	u := User{"user_11111", "astaxie", "11111", Profile{"male", 20, "Singapore", "astaxie@gmail.com"}}
-	UserList["user_11111"] = &u
+	orm.RegisterModel(new(User))
 }
 
+/// User 用户信息
 type User struct {
-	Id       string
-	Username string
-	Password string
-	Profile  Profile
+	Id       int       `orm:"auto"`
+	UserName string    `orm:"unique" description:"用户名"`
+	Email    string    `orm:"null;unique" description:"电子邮箱"`
+	Created  time.Time `orm:"auto_now_add;type(datetime)" description:"注册时间"`
+	Updated  time.Time `orm:"auto_now;type(datetime)" description:"最后一次更新时间"`
 }
 
-type Profile struct {
-	Gender  string
-	Age     int
-	Address string
-	Email   string
-}
-
-func AddUser(u User) string {
-	u.Id = "user_" + strconv.FormatInt(time.Now().UnixNano(), 10)
-	UserList[u.Id] = &u
-	return u.Id
+func AddUser(u User) (int64, error) {
+	o := orm.NewOrm()
+	id, err := o.Insert(&u)
+	if err == nil {
+		fmt.Println(id)
+	}
+	return id, err
 }
 
 func GetUser(uid string) (u *User, err error) {
-	if u, ok := UserList[uid]; ok {
-		return u, nil
+	o := orm.NewOrm()
+	id, err := strconv.Atoi(uid)
+	if err != nil {
+		return nil, err
 	}
-	return nil, errors.New("User not exists")
+	user := User{Id: id}
+	err = o.Read(&user)
+
+	return &user, err
 }
 
-func GetAllUsers() map[string]*User {
-	return UserList
-}
-
-func UpdateUser(uid string, uu *User) (a *User, err error) {
-	if u, ok := UserList[uid]; ok {
-		if uu.Username != "" {
-			u.Username = uu.Username
-		}
-		if uu.Password != "" {
-			u.Password = uu.Password
-		}
-		if uu.Profile.Age != 0 {
-			u.Profile.Age = uu.Profile.Age
-		}
-		if uu.Profile.Address != "" {
-			u.Profile.Address = uu.Profile.Address
-		}
-		if uu.Profile.Gender != "" {
-			u.Profile.Gender = uu.Profile.Gender
-		}
-		if uu.Profile.Email != "" {
-			u.Profile.Email = uu.Profile.Email
-		}
-		return u, nil
+func UpdateUser(uid string, updatefunc func(u *User) *User) (a *User, err error) {
+	o := orm.NewOrm()
+	user, err := GetUser(uid)
+	if err != nil {
+		return user, err
 	}
-	return nil, errors.New("User Not Exist")
-}
 
-func Login(username, password string) bool {
-	for _, u := range UserList {
-		if u.Username == username && u.Password == password {
-			return true
-		}
+	user = updatefunc(user)
+	if _, err := o.Update(&user); err != nil {
+		return nil, err
 	}
-	return false
+
+	return user, err
 }
 
-func DeleteUser(uid string) {
-	delete(UserList, uid)
+func DeleteUser(uid string) error {
+	o := orm.NewOrm()
+	id, err := strconv.Atoi(uid)
+	if err != nil {
+		return err
+	}
+	if _, err := o.Delete(&User{Id: id}); err != nil {
+		return err
+	}
+	return nil
 }
