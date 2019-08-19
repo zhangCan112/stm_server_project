@@ -12,11 +12,19 @@ func init() {
 	orm.RegisterModel(new(UserAuth))
 }
 
+/// AuthType 登录验证方式
+type AuthType int
+
+const (
+	USERNAME AuthType = iota
+	EMAIL
+)
+
 /// UserAuth 用户登录信息
 type UserAuth struct {
 	Id            int       `orm:"auto"`
 	UserId        int       `description:"用户(User)id"`
-	IdentityType  int       `description:"登录类型"`
+	IdentityType  AuthType  `description:"登录类型"`
 	Identifier    string    `orm:"unique" description:"注册标识"`
 	Credential    string    `description:"密码凭证"`
 	Updated       time.Time `orm:"auto_now;type(datetime)" description:"最后一次更新时间"`
@@ -59,7 +67,7 @@ func UpdateUserAuth(uaid string, updatefunc func(ua *UserAuth) *UserAuth) (a *Us
 	return userAuth, err
 }
 
-func Login(identityType int, identifier, credential string) (success bool, userId int) {
+func Login(identityType AuthType, identifier, credential string) (success bool, userId int) {
 	o := orm.NewOrm()
 	var userAuth UserAuth
 	err := o.QueryTable(&UserAuth{}).Filter("identityType", identityType).Filter("identifier", identifier).Filter("credential", credential).One(&userAuth, "user_id")
