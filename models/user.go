@@ -13,9 +13,10 @@ func init() {
 
 // User 用户信息
 type User struct {
-	Base
-	UserName string `orm:"unique" description:"用户名"`
-	Email    string `orm:"null;unique" description:"电子邮箱"`
+	Id       int         `orm:"auto"`
+	UserName string      `orm:"unique" description:"用户名"`
+	Email    string      `orm:"null;unique" description:"电子邮箱"`
+	Times
 }
 
 func AddUser(u User) (int64, error) {

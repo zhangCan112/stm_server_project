@@ -347,12 +347,28 @@
                 }
             }
         },
+        "models.Times": {
+            "title": "Times",
+            "type": "object",
+            "properties": {
+                "Created": {
+                    "description": "创建时间",
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "Updated": {
+                    "description": "最后一次更新时间",
+                    "type": "string",
+                    "format": "datetime"
+                }
+            }
+        },
         "models.User": {
             "title": "User",
             "type": "object",
             "properties": {
                 "Created": {
-                    "description": "注册时间",
+                    "description": "创建时间",
                     "type": "string",
                     "format": "datetime"
                 },
@@ -383,7 +399,7 @@
         },
         {
             "name": "user",
-            "description": "Operations about Users\n"
+            "description": "UserController Operations about Users and UserAuth\n"
         }
     ]
 }

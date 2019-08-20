@@ -22,12 +22,13 @@ const (
 
 /// UserAuth 用户登录信息
 type UserAuth struct {
-	Base
+	Id            int       `orm:"auto"`
 	UserId        int       `description:"用户(User)id"`
 	IdentityType  AuthType  `description:"登录类型"`
 	Identifier    string    `orm:"unique" description:"注册标识"`
 	Credential    string    `description:"密码凭证"`
 	LastLoginTime time.Time `orm:"null;type(datetime)" description:"最后一次登录时间"`
+	Times
 }
 
 func AddUserAuth(ua UserAuth) (int64, error) {
