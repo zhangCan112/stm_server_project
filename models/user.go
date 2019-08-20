@@ -3,7 +3,6 @@ package models
 import (
 	"fmt"
 	"strconv"
-	"time"
 
 	"github.com/astaxie/beego/orm"
 )
@@ -12,13 +11,11 @@ func init() {
 	orm.RegisterModel(new(User))
 }
 
-/// User 用户信息
+// User 用户信息
 type User struct {
-	Id       int       `orm:"auto"`
-	UserName string    `orm:"unique" description:"用户名"`
-	Email    string    `orm:"null;unique" description:"电子邮箱"`
-	Created  time.Time `orm:"auto_now_add;type(datetime)" description:"注册时间"`
-	Updated  time.Time `orm:"auto_now;type(datetime)" description:"最后一次更新时间"`
+	Base
+	UserName string `orm:"unique" description:"用户名"`
+	Email    string `orm:"null;unique" description:"电子邮箱"`
 }
 
 func AddUser(u User) (int64, error) {

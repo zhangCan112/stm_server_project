@@ -22,12 +22,11 @@ const (
 
 /// UserAuth 用户登录信息
 type UserAuth struct {
-	Id            int       `orm:"auto"`
+	Base
 	UserId        int       `description:"用户(User)id"`
 	IdentityType  AuthType  `description:"登录类型"`
 	Identifier    string    `orm:"unique" description:"注册标识"`
 	Credential    string    `description:"密码凭证"`
-	Updated       time.Time `orm:"auto_now;type(datetime)" description:"最后一次更新时间"`
 	LastLoginTime time.Time `orm:"null;type(datetime)" description:"最后一次登录时间"`
 }
 

@@ -38,7 +38,7 @@ func syncdb() {
 	name := "default"
 
 	// drop table 后再建表
-	force := true
+	force, _ := beego.AppConfig.Bool("SyncdbForce")
 
 	// 打印执行过程
 	verbose := true

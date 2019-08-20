@@ -5,11 +5,12 @@ import (
 	"github.com/zhangCan112/stm_server_project/models"
 )
 
-// Operations about Users
+//UserController Operations about Users and UserAuth
 type UserController struct {
 	beego.Controller
 }
 
+// Post post
 // @Title CreateUser
 // @Description create users
 // @Param	body		body 	models.User	true		"body for user content"
