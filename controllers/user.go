@@ -2,7 +2,8 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
-	"github.com/zhangCan112/stm_server_project/models"
+	"github.com/zhangCan112/stm_server_project/services"
+	"github.com/zhangCan112/stm_server_project/utils"
 )
 
 //UserController Operations about Users and UserAuth
@@ -93,17 +94,21 @@ func (u *UserController) Delete() {
 // @Description Logs user into the system
 // @Param	username		query 	string	true		"The username for login"
 // @Param	password		query 	string	true		"The password for login"
-// @Success 200 {string} login success
+// @Success 200 {object} utils.Response
 // @Failure 403 user not exist
 // @router /login [get]
 func (u *UserController) Login() {
 	username := u.GetString("username")
 	password := u.GetString("password")
-	if success, _ := models.Login(models.USERNAME, username, password); success == true {
-		u.Data["json"] = "login success"
+	response := utils.NewResponse()
+	if _, ok := services.Login(username, password); ok == true {
+		response.SetScode(0)
+		response.SetMsg("user login success")
 	} else {
-		u.Data["json"] = "user not exist"
+		response.SetScode(1)
+		response.SetMsg("user not exist")
 	}
+	u.Data["json"] = response.ToMap()
 	u.ServeJSON()
 }
 

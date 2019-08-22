@@ -206,7 +206,9 @@ paths:
         type: string
       responses:
         "200":
-          description: '{string} login success'
+          description: ""
+          schema:
+            $ref: '#/definitions/utils.Response'
         "403":
           description: user not exist
   /user/logout:
@@ -219,6 +221,9 @@ paths:
         "200":
           description: '{string} logout success'
 definitions:
+  112.0xc000328bd0.false:
+    title: "false"
+    type: object
   models.Object:
     title: Object
     type: object
@@ -256,6 +261,13 @@ definitions:
       Id:
         type: integer
         format: int64
+      LastLoginTime:
+        description: 最后一次登录时间
+        type: string
+        format: datetime
+      Password:
+        description: 密码
+        type: string
       Updated:
         description: 最后一次更新时间
         type: string
@@ -263,6 +275,17 @@ definitions:
       UserName:
         description: 用户名
         type: string
+  utils.Response:
+    title: Response
+    type: object
+    properties:
+      body:
+        $ref: '#/definitions/112.0xc000328bd0.false'
+      msg:
+        type: string
+      scode:
+        type: integer
+        format: int64
 tags:
 - name: object
   description: |
