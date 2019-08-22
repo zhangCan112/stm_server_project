@@ -26,8 +26,8 @@ func WrapError(msg string, err error) *Error {
 	}
 }
 
-// Stack 返回当前错误的堆栈数据
-func (err *Error) Stack() *StackTrace {
+// StackTrace 返回当前错误的堆栈数据对象
+func (err *Error) StackTrace() *StackTrace {
 	return err.stack
 }
 
@@ -36,6 +36,64 @@ func (err *Error) StackInfo() string {
 	return fmt.Sprintf("[stackInfo]: %s %s:%d", err.stack.FuncName(), err.stack.File(), err.stack.Line())
 }
 
+// Cause 返回当前错误的上一级错误
+func (err *Error) Cause() error {
+	return err.cause
+}
+
 func (err *Error) Error() string {
 	return err.message
+}
+
+// RootCause 返回error的最终根错误
+// 如果error没有Cause()方法，则返回自身
+func RootCause(err error) error {
+	type causer interface {
+		Cause() error
+	}
+
+	for err != nil {
+		cause, ok := err.(causer)
+		if !ok {
+			break
+		}
+		err = cause.Cause()
+	}
+	return err
+}
+
+// StackInfo 返回error的堆栈信息
+// 如果error没有实现StackInfo方法则返回为""空字符串
+func StackInfo(err error) string {
+	type stacker interface {
+		StackInfo() string
+	}
+
+	stack, ok := err.(stacker)
+	if !ok {
+		return ""
+	}
+	return stack.StackInfo()
+}
+
+// FullFormat 返回包含每一级错误信息+堆栈信息的完整错误信息
+// 如果error没有同时实现StackInfo 和 Cause 方法则结束遍历，返回当前Error信息
+func FullFormat(err error) string {
+	type myerror interface {
+		StackInfo() string
+		Cause() error
+		Error() string
+	}
+	format := ""
+	for err != nil {
+		my, ok := err.(myerror)
+		if !ok {
+			format += fmt.Sprintf("[Error]%s\n", err.Error())
+			break
+		}
+		format += fmt.Sprintf("[Error]%s: %s\n", my.Error(), my.StackInfo())
+		err = my.Cause()
+	}
+	return format
+
 }

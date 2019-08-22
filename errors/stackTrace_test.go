@@ -5,14 +5,14 @@ import (
 	"testing"
 )
 
-func TestStackTrace(t *testing.T) {
+func TestStackTraceModel(t *testing.T) {
 	st := Caller(0)
 	if st == nil {
 		t.Errorf("TestStackTrace.Error(): Caller returns nil")
 	}
 
-	if st.FuncName() != "TestStackTrace" {
-		t.Errorf("TestStackTrace.Error(): FuncName got: %s want: %s", st.FuncName(), "TestStackTrace")
+	if st.FuncName() != "TestStackTraceModel" {
+		t.Errorf("TestStackTrace.Error(): FuncName got: %s want: %s", st.FuncName(), "TestStackTraceModel")
 	}
 
 	if st.Line() != 9 {
