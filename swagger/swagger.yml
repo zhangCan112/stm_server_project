@@ -122,7 +122,7 @@ paths:
         description: body for user content
         required: true
         schema:
-          $ref: '#/definitions/models.User'
+          $ref: '#/definitions/controllers.userReg'
       responses:
         "200":
           description: '{int} models.User.Id'
@@ -221,9 +221,19 @@ paths:
         "200":
           description: '{string} logout success'
 definitions:
-  112.0xc000328bd0.false:
+  112.0xc0003b4d80.false:
     title: "false"
     type: object
+  controllers.userReg:
+    title: userReg
+    type: object
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      userName:
+        type: string
   models.Object:
     title: Object
     type: object
@@ -280,7 +290,7 @@ definitions:
     type: object
     properties:
       body:
-        $ref: '#/definitions/112.0xc000328bd0.false'
+        $ref: '#/definitions/112.0xc0003b4d80.false'
       msg:
         type: string
       scode:

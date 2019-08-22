@@ -1,9 +1,10 @@
 package models
 
 import (
-	"fmt"
 	"strconv"
 	"time"
+
+	"github.com/zhangCan112/stm_server_project/errors"
 
 	"github.com/astaxie/beego/orm"
 )
@@ -25,47 +26,45 @@ type User struct {
 func AddUser(u User) (int64, error) {
 	o := orm.NewOrm()
 	id, err := o.Insert(&u)
-	if err == nil {
-		fmt.Println(id)
-	}
-	return id, err
+
+	return id, errors.WrapError("数据库用户数据插入操作失败！", err)
 }
 
 func GetUser(uid string) (u *User, err error) {
 	o := orm.NewOrm()
 	id, err := strconv.Atoi(uid)
 	if err != nil {
-		return nil, err
+		return nil, errors.WrapError("用户Id转为数字类型失败！", err)
 	}
 	user := User{Id: id}
 	err = o.Read(&user)
 
-	return &user, err
+	return &user, errors.WrapError("数据库读取用户数据失败！", err)
 }
 
 func UpdateUser(uid string, updatefunc func(u *User) *User) (a *User, err error) {
 	o := orm.NewOrm()
 	user, err := GetUser(uid)
 	if err != nil {
-		return user, err
+		return user, errors.WrapError("更新用户数据时读取用户数据失败！", err)
 	}
 
 	user = updatefunc(user)
 	if _, err := o.Update(&user); err != nil {
-		return nil, err
+		return nil, errors.WrapError("数据库更新用户数据操作失败！", err)
 	}
 
-	return user, err
+	return user, nil
 }
 
 func DeleteUser(uid string) error {
 	o := orm.NewOrm()
 	id, err := strconv.Atoi(uid)
 	if err != nil {
-		return err
+		return errors.WrapError("用户Id转为数字类型失败！", err)
 	}
 	if _, err := o.Delete(&User{Id: id}); err != nil {
-		return err
+		return errors.WrapError("数据库删除用户数据操作失败！", err)
 	}
 	return nil
 }

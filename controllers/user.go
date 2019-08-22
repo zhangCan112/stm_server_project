@@ -1,7 +1,11 @@
 package controllers
 
 import (
+	"encoding/json"
+	"fmt"
+
 	"github.com/astaxie/beego"
+	"github.com/zhangCan112/stm_server_project/models"
 	"github.com/zhangCan112/stm_server_project/services"
 	"github.com/zhangCan112/stm_server_project/utils"
 )
@@ -11,19 +15,36 @@ type UserController struct {
 	beego.Controller
 }
 
+// userReg Post请求的表单数据模型
+type userReg struct {
+	userName string
+	email    string
+	password string
+}
+
 // Post post
 // @Title CreateUser
 // @Description create users
-// @Param	body		body 	models.User	true		"body for user content"
+// @Param	body		body controllers.userReg	true		"body for user content"
 // @Success 200 {int} models.User.Id
 // @Failure 403 body is empty
 // @router / [post]
 func (u *UserController) Post() {
-	// var user models.User
-	// json.Unmarshal(u.Ctx.Input.RequestBody, &user)
-	// uid := models.AddUser(user)
-	// u.Data["json"] = map[string]string{"uid": uid}
-	// u.ServeJSON()
+	var reg userReg
+	json.Unmarshal(u.Ctx.Input.RequestBody, &reg)
+	fmt.Println(reg)
+	fmt.Println(string(u.Ctx.Input.RequestBody))
+	user := models.User{
+		UserName: reg.userName,
+		Email:    reg.email,
+		Password: reg.password,
+	}
+	uid, err := models.AddUser(user)
+	if err != nil {
+
+	}
+	u.Data["json"] = map[string]interface{}{"uid": uid}
+	u.ServeJSON()
 }
 
 // @Title GetAll
