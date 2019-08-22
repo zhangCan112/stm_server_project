@@ -1,11 +1,11 @@
 package services
 
-import (
+import (	
 	"github.com/astaxie/beego/orm"
 	md "github.com/zhangCan112/stm_server_project/models"
 )
 
-// Login 登录服务
+// Login 登录账户
 func Login(identifier, password string) (u *md.User, ok bool) {
 	o := orm.NewOrm()
 	var (
@@ -25,7 +25,15 @@ func Login(identifier, password string) (u *md.User, ok bool) {
 	return &user, ok
 }
 
-//Reg 注册服务
-func Reg() {
-
+//Reg 用户注册
+func Reg(userName, email, password string) error {
+	_, err := md.AddUser(md.User{
+		UserName: userName,
+		Email:    email,
+		Password: password,
+	})
+	if err != nil {		
+		return err
+	}
+	return nil
 }
