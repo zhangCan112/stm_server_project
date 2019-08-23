@@ -8,6 +8,7 @@ import (
 	"github.com/zhangCan112/stm_server_project/models"
 	"github.com/zhangCan112/stm_server_project/services"
 	"github.com/zhangCan112/stm_server_project/utils"
+	"github.com/zhangCan112/stm_server_project/validation"
 )
 
 //UserController Operations about Users and UserAuth
@@ -17,9 +18,9 @@ type UserController struct {
 
 // userReg Post请求的表单数据模型
 type userReg struct {
-	userName string
-	email    string
-	password string
+	UserName string `json:"userName" valid:"Required;MaxSize(10);MinSize(3)"`
+	Email    string `json:"email" valid:"Required; Email; MaxSize(100)"`
+	Password string `json:"password" valid:"Required;MinSize(6);MaxSize(15)"`
 }
 
 // Post post
@@ -32,12 +33,24 @@ type userReg struct {
 func (u *UserController) Post() {
 	var reg userReg
 	json.Unmarshal(u.Ctx.Input.RequestBody, &reg)
-	fmt.Println(reg)
-	fmt.Println(string(u.Ctx.Input.RequestBody))
+	valid := validation.Validation{}
+
+	b, err := valid.Valid(&reg)
+	if err != nil {
+		// handle error
+	}
+	if !b {
+		// validation does not pass
+		// blabla...
+		for _, err := range valid.Errors {
+			fmt.Println(err.Key, err.Name, err.Field, err.Tmpl, err.Message)
+		}
+	}
+
 	user := models.User{
-		UserName: reg.userName,
-		Email:    reg.email,
-		Password: reg.password,
+		UserName: reg.UserName,
+		Email:    reg.Email,
+		Password: reg.Password,
 	}
 	uid, err := models.AddUser(user)
 	if err != nil {

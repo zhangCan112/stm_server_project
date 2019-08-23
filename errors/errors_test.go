@@ -69,7 +69,7 @@ func TestFullFormat(t *testing.T) {
 	err2 := WrapError("error2", rootCause)
 	err3 := WrapError("error3", err2)
 
-	target := ""
+	target := "\n"
 	target += fmt.Sprintf("[Error]%s: %s\n", err3.Error(), err3.StackInfo())
 	target += fmt.Sprintf("[Error]%s: %s\n", err2.Error(), err2.StackInfo())
 	target += fmt.Sprintf("[Error]%s\n", rootCause.Error())

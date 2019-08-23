@@ -33,7 +33,7 @@ func (err *Error) StackTrace() *StackTrace {
 
 // StackInfo 返回当前错误的堆栈信息
 func (err *Error) StackInfo() string {
-	return fmt.Sprintf("[stackInfo]: %s %s:%d", err.stack.FuncName(), err.stack.File(), err.stack.Line())
+	return fmt.Sprintf("%s %s:%d", err.stack.FuncName(), err.stack.File(), err.stack.Line())
 }
 
 // Cause 返回当前错误的上一级错误
@@ -84,7 +84,7 @@ func FullFormat(err error) string {
 		Cause() error
 		Error() string
 	}
-	format := ""
+	format := "\n"
 	for err != nil {
 		my, ok := err.(myerror)
 		if !ok {
