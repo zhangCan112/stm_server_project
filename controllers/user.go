@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/astaxie/beego"
 	"github.com/zhangCan112/stm_server_project/models"
@@ -18,9 +17,9 @@ type UserController struct {
 
 // userReg Post请求的表单数据模型
 type userReg struct {
-	UserName string `json:"userName" valid:"Required;MaxSize(10);MinSize(3)"`
-	Email    string `json:"email" valid:"Required; Email; MaxSize(100)"`
-	Password string `json:"password" valid:"Required;MinSize(6);MaxSize(15)"`
+	UserName string `json:"userName" label:"用户名" valid:"Required;AlphaDash;MaxSize(20);MinSize(3)"`
+	Email    string `json:"email" label:"邮箱" valid:"Required; Email; MaxSize(100)"`
+	Password string `json:"password" label:"密码" valid:"Required;MinSize(6);MaxSize(15)"`
 }
 
 // Post post
@@ -34,17 +33,12 @@ func (u *UserController) Post() {
 	var reg userReg
 	json.Unmarshal(u.Ctx.Input.RequestBody, &reg)
 	valid := validation.Validation{}
-
 	b, err := valid.Valid(&reg)
 	if err != nil {
 		// handle error
 	}
 	if !b {
-		// validation does not pass
-		// blabla...
-		for _, err := range valid.Errors {
-			fmt.Println(err.Key, err.Name, err.Field, err.Tmpl, err.Message)
-		}
+		println(valid.FormatErrorMessage(valid.Errors[0]))
 	}
 
 	user := models.User{
