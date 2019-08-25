@@ -1,5 +1,9 @@
 package utils
 
+import (
+	"github.com/zhangCan112/stm_server_project/errcode"
+)
+
 //Response 约束的Response的基本结构
 type Response struct {
 	scode int
@@ -10,6 +14,12 @@ type Response struct {
 //NewResponse creator
 func NewResponse() *Response {
 	return &Response{}
+}
+
+//SetErrcode 用errcode.ErrCode设置Scode和msg
+func (rp *Response) SetErrcode(ec *errcode.ErrCode) {
+	rp.scode = ec.Code
+	rp.msg = ec.Desp
 }
 
 //SetScode 设置Scode值

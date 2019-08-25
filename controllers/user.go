@@ -4,7 +4,8 @@ import (
 	"encoding/json"
 
 	"github.com/astaxie/beego"
-	"github.com/zhangCan112/stm_server_project/models"
+	"github.com/zhangCan112/stm_server_project/errcode"
+	"github.com/zhangCan112/stm_server_project/errors"
 	"github.com/zhangCan112/stm_server_project/services"
 	"github.com/zhangCan112/stm_server_project/utils"
 	"github.com/zhangCan112/stm_server_project/validation"
@@ -26,32 +27,48 @@ type userReg struct {
 // @Title CreateUser
 // @Description create users
 // @Param	body		body controllers.userReg	true		"body for user content"
-// @Success 200 {int} models.User.Id
+// @Success 200 {object} utils.Response
 // @Failure 403 body is empty
 // @router / [post]
 func (u *UserController) Post() {
+
+	response := utils.NewResponse()
+	defer func() {
+		u.Data["json"] = response.ToMap()
+		defer u.ServeJSON()
+	}()
+
 	var reg userReg
 	json.Unmarshal(u.Ctx.Input.RequestBody, &reg)
 	valid := validation.Validation{}
 	b, err := valid.Valid(&reg)
 	if err != nil {
-		// handle error
+		errors.WrapError(errcode.UserRegValidError.Desp, err).Log(errcode.UserRegValidError.Code)
+		response.SetErrcode(errcode.UserRegValidError)
+		return
 	}
 	if !b {
-		println(valid.FormatErrorMessage(valid.Errors[0]))
+		response.SetScode(errcode.UserRegValidNotPass.Code)
+		msg, _ := valid.FirstErrorMessage()
+		response.SetMsg(msg)
+		return
 	}
 
-	user := models.User{
-		UserName: reg.UserName,
-		Email:    reg.Email,
-		Password: reg.Password,
+	if isExist := services.UserIsExisted(reg.UserName, reg.Email); isExist {
+		response.SetErrcode(errcode.UserRegUserHasExisted)
+		return
 	}
-	uid, err := models.AddUser(user)
+
+	err = services.Reg(reg.UserName, reg.Email, reg.Password)
+
 	if err != nil {
-
+		errors.WrapError(errcode.UserRegServiceError.Desp, err).Log(errcode.UserRegServiceError.Code)
+		response.SetErrcode(errcode.UserRegServiceError)
+		return
 	}
-	u.Data["json"] = map[string]interface{}{"uid": uid}
-	u.ServeJSON()
+
+	response.SetScode(errcode.Successcode.Code)
+	response.SetMsg("注册成功!")
 }
 
 // @Title GetAll
@@ -130,7 +147,7 @@ func (u *UserController) Login() {
 	password := u.GetString("password")
 	response := utils.NewResponse()
 	if _, ok := services.Login(username, password); ok == true {
-		response.SetScode(0)
+		response.SetScode(errcode.Successcode.Code)
 		response.SetMsg("user login success")
 	} else {
 		response.SetScode(1)

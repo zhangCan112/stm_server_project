@@ -41,6 +41,13 @@ func (err *Error) Cause() error {
 	return err.cause
 }
 
+// Log 保留完整错误堆栈信息到日志系统中
+func (err *Error) Log(code int) *Error {
+	// 暂时不实现
+	fmt.Printf(FullFormat(err))
+	return err
+}
+
 func (err *Error) Error() string {
 	return err.message
 }

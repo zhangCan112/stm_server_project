@@ -27,7 +27,11 @@ func AddUser(u User) (int64, error) {
 	o := orm.NewOrm()
 	id, err := o.Insert(&u)
 
-	return id, errors.WrapError("数据库用户数据插入操作失败！", err)
+	if err != nil {
+		return -1, errors.WrapError("数据库用户数据插入操作失败！", err)
+	}
+
+	return id, nil
 }
 
 func GetUser(uid string) (u *User, err error) {
