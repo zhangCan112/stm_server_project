@@ -3,7 +3,6 @@ package controllers
 import (
 	"encoding/json"
 
-	"github.com/astaxie/beego"
 	"github.com/zhangCan112/stm_server_project/errcode"
 	"github.com/zhangCan112/stm_server_project/errors"
 	"github.com/zhangCan112/stm_server_project/services"
@@ -13,7 +12,7 @@ import (
 
 //UserController Operations about Users and UserAuth
 type UserController struct {
-	beego.Controller
+	BaseController
 }
 
 // userReg Post请求的表单数据模型
@@ -151,11 +150,18 @@ func (u *UserController) Login() {
 		u.ServeJSON()
 	}()
 
+	if u.IsLogin == true {
+		response.SetErrcode(errcode.UserRepeatLogin)
+		return
+	}
+
 	username := u.GetString("username")
 	password := u.GetString("password")
-	if _, ok := services.Login(username, password); ok == true {
+	if user, ok := services.Login(username, password); ok == true {
+		u.SetSession("User", *user)
 		response.SetScode(errcode.Successcode.Code)
 		response.SetMsg("用户登录成功！")
+		u.Ctx.SetCookie("isLogin", "true")
 	} else {
 		response.SetErrcode(errcode.UserLoginFailed)
 	}

@@ -185,7 +185,10 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "{int} models.User.Id"
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
                     },
                     "403": {
                         "description": "body is empty"
@@ -334,7 +337,7 @@
         }
     },
     "definitions": {
-        "112.0xc0003b4d80.false": {
+        "177.0xc000432450.false": {
             "title": "false",
             "type": "object"
         },
@@ -427,7 +430,7 @@
             "type": "object",
             "properties": {
                 "body": {
-                    "$ref": "#/definitions/112.0xc0003b4d80.false"
+                    "$ref": "#/definitions/177.0xc000432450.false"
                 },
                 "msg": {
                     "type": "string"
