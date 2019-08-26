@@ -135,6 +135,7 @@ func (u *UserController) Delete() {
 	// u.ServeJSON()
 }
 
+// Login 登录接口
 // @Title Login
 // @Description Logs user into the system
 // @Param	username		query 	string	true		"The username for login"
@@ -143,17 +144,21 @@ func (u *UserController) Delete() {
 // @Failure 403 user not exist
 // @router /login [get]
 func (u *UserController) Login() {
+
+	response := utils.NewResponse()
+	defer func() {
+		u.Data["json"] = response.ToMap()
+		u.ServeJSON()
+	}()
+
 	username := u.GetString("username")
 	password := u.GetString("password")
-	response := utils.NewResponse()
 	if _, ok := services.Login(username, password); ok == true {
 		response.SetScode(errcode.Successcode.Code)
 		response.SetMsg("用户登录成功！")
 	} else {
 		response.SetErrcode(errcode.UserLoginFailed)
 	}
-	u.Data["json"] = response.ToMap()
-	u.ServeJSON()
 }
 
 // @Title logout
