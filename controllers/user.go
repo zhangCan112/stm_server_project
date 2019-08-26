@@ -148,10 +148,9 @@ func (u *UserController) Login() {
 	response := utils.NewResponse()
 	if _, ok := services.Login(username, password); ok == true {
 		response.SetScode(errcode.Successcode.Code)
-		response.SetMsg("user login success")
+		response.SetMsg("用户登录成功！")
 	} else {
-		response.SetScode(1)
-		response.SetMsg("user not exist")
+		response.SetErrcode(errcode.UserLoginFailed)
 	}
 	u.Data["json"] = response.ToMap()
 	u.ServeJSON()
