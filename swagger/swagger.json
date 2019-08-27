@@ -337,7 +337,7 @@
         }
     },
     "definitions": {
-        "177.0xc000432450.false": {
+        "177.0xc000448480.false": {
             "title": "false",
             "type": "object"
         },
@@ -401,6 +401,10 @@
                     "description": "电子邮箱",
                     "type": "string"
                 },
+                "Guid": {
+                    "description": "用户唯一Id",
+                    "type": "string"
+                },
                 "Id": {
                     "type": "integer",
                     "format": "int64"
@@ -430,7 +434,7 @@
             "type": "object",
             "properties": {
                 "body": {
-                    "$ref": "#/definitions/177.0xc000432450.false"
+                    "$ref": "#/definitions/177.0xc000448480.false"
                 },
                 "msg": {
                     "type": "string"

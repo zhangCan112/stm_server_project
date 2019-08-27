@@ -1,6 +1,8 @@
 package services
 
 import (
+	"time"
+
 	"github.com/astaxie/beego/orm"
 	"github.com/zhangCan112/stm_server_project/errors"
 	md "github.com/zhangCan112/stm_server_project/models"
@@ -36,6 +38,8 @@ func Login(identifier, password string) (u *md.User, ok bool) {
 	qs := o.QueryTable(&user).SetCond(cond)
 	if err = qs.One(&user); err == nil {
 		if user.Password == password {
+			user.LastLoginTime = time.Now()
+			md.UpdateUser(&user)
 			ok = true
 		}
 	}
