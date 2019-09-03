@@ -136,7 +136,7 @@ func (u *UserController) Delete() {
 
 // Login 登录接口
 // @Title Login
-// @Description Logs user into the system
+// @Description (登录接口)Logs user into the system
 // @Param	username		query 	string	true		"The username for login"
 // @Param	password		query 	string	true		"The password for login"
 // @Success 200 {object} utils.Response

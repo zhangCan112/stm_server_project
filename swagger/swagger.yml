@@ -193,7 +193,7 @@ paths:
     get:
       tags:
       - user
-      description: Logs user into the system
+      description: (登录接口)Logs user into the system
       operationId: UserController.Login
       parameters:
       - in: query
@@ -223,7 +223,7 @@ paths:
         "200":
           description: '{string} logout success'
 definitions:
-  177.0xc000440960.false:
+  177.0xc00045b2f0.false:
     title: "false"
     type: object
   controllers.userReg:
@@ -295,7 +295,7 @@ definitions:
     type: object
     properties:
       body:
-        $ref: '#/definitions/177.0xc000440960.false'
+        $ref: '#/definitions/177.0xc00045b2f0.false'
       msg:
         type: string
       scode:

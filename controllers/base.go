@@ -27,7 +27,8 @@ func (b *BaseController) Prepare() {
 
 	//通过isLogin的状态告诉前端当前是否为登录状态
 	if b.Ctx.GetCookie("isLogin") != isLogin {
-		b.Ctx.SetCookie("isLogin", isLogin)
+		cookieLeftTime, _ := beego.AppConfig.Int64("sessioncookielifetime")
+		b.Ctx.SetCookie("isLogin", isLogin, cookieLeftTime/2, "/")
 	}
 
 }
