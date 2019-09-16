@@ -175,3 +175,16 @@ func (u *UserController) Logout() {
 	u.Data["json"] = "logout success"
 	u.ServeJSON()
 }
+
+// @Title health
+// @Description health keepAlive and refresh login status in user session(健康检查接口，主要用于前端更新用户的登陆态cookie)
+// @Success 200 {object} utils.Response
+// @router /health [get]
+func (u *UserController) Health() {
+	response := utils.NewResponse()
+	defer func() {
+		u.Data["json"] = response.ToMap()
+		u.ServeJSON()
+	}()
+	response.SetMsg("I'm ok!")
+}

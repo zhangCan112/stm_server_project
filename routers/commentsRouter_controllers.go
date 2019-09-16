@@ -99,6 +99,15 @@ func init() {
 
     beego.GlobalControllerRouter["github.com/zhangCan112/stm_server_project/controllers:UserController"] = append(beego.GlobalControllerRouter["github.com/zhangCan112/stm_server_project/controllers:UserController"],
         beego.ControllerComments{
+            Method: "Health",
+            Router: `/health`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["github.com/zhangCan112/stm_server_project/controllers:UserController"] = append(beego.GlobalControllerRouter["github.com/zhangCan112/stm_server_project/controllers:UserController"],
+        beego.ControllerComments{
             Method: "Login",
             Router: `/login`,
             AllowHTTPMethods: []string{"get"},
