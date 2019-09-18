@@ -172,8 +172,14 @@ func (u *UserController) Login() {
 // @Success 200 {string} logout success
 // @router /logout [get]
 func (u *UserController) Logout() {
-	u.Data["json"] = "logout success"
-	u.ServeJSON()
+	response := utils.NewResponse()
+	defer func() {
+		u.Data["json"] = response.ToMap()
+		u.ServeJSON()
+	}()
+	u.DelSession("User")
+	u.Ctx.SetCookie("isLogin", "false")
+	response.SetMsg("logout!")
 }
 
 // @Title health
